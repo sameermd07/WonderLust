@@ -1,4 +1,4 @@
-const mongoose =require('mongoose')
+const mongoose = require('mongoose')
 const listingSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -42,7 +42,11 @@ const listingSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Review" // points to the Review model
     }
-  ]
+  ],
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }
 });
-const listing = mongoose.model('listing',listingSchema);
-module.exports = {listing};
+const listing = mongoose.model('listing', listingSchema);
+module.exports = { listing };

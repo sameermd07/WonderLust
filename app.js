@@ -10,6 +10,7 @@ const { sampleListings } = require("./init/listingData.js");
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const jwt = require('jsonwebtoken');
 
 // ─── View Engine ───────────────────────────────────────────────────────────────
@@ -27,17 +28,19 @@ app.use(cookieParser());
 // ─── JWT Secret ────────────────────────────────────────────────────────────────
 const JWT_SECRET = "your_jwt_secret_key_change_this_in_production";
 
-// ─── Simple Session for Flash Messages ─────────────────────────────────────────
-app.use((req, res, next) => {
-    if (!req.session) req.session = {};
-    next();
-});
+// ─── Session Middleware ────────────────────────────────────────────────────────
+app.use(session({
+    secret: 'wonderlust_secret_key_change_in_production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 }
+}));
 
 // ─── Authentication Middleware ─────────────────────────────────────────────────
 const authMiddleware = async (req, res, next) => {
     try {
         const token = req.cookies.token;
-        
+
         if (!token) {
             req.user = null;
             return next();
@@ -60,6 +63,27 @@ const isLoggedIn = (req, res, next) => {
         return res.redirect("/login");
     }
     next();
+};
+
+// ─── isOwner Middleware ───────────────────────────────────────────────────────
+const isOwner = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const curr = await listing.findById(id);
+        if (!curr) {
+            setFlash(req, "error", "Listing not found");
+            return res.redirect("/listings");
+        }
+        if (!curr.owner || !curr.owner.equals(req.user._id)) {
+            setFlash(req, "error", "You do not have permission to do that!");
+            return res.redirect(`/listings/${id}`);
+        }
+        next();
+    } catch (err) {
+        console.error(err);
+        setFlash(req, "error", "Something went wrong");
+        res.redirect("/listings");
+    }
 };
 
 // ─── Flash Message Helper ──────────────────────────────────────────────────────
@@ -159,7 +183,7 @@ app.post("/signup", async (req, res) => {
 
         setFlash(req, "success", `Welcome to WonderLust, ${email}! 🎉`);
         res.redirect("/listings");
-        
+
     } catch (error) {
         console.error("Signup error:", error);
         setFlash(req, "error", "An error occurred during signup");
@@ -214,7 +238,7 @@ app.post("/login", async (req, res) => {
 
         setFlash(req, "success", `Welcome back, ${email}! 👋`);
         res.redirect("/listings");
-        
+
     } catch (error) {
         console.error("Login error:", error);
         setFlash(req, "error", "An error occurred during login");
@@ -249,14 +273,15 @@ app.get("/listings/new", isLoggedIn, (req, res) => {
     res.render("Listing/new");
 });
 
-app.get("/listings/:id",async (req, res, next) => {
+app.get("/listings/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
-        const curr = await listing.findById(id).populate("reviews");
+        const curr = await listing.findById(id).populate("reviews").populate("owner");
         if (!curr) {
             setFlash(req, "error", "Listing not found");
             return res.redirect("/listings");
         }
+        console.log('DEBUG currentUser:', req.user?._id, '| listing owner:', curr.owner?._id, '| owner email:', curr.owner?.email);
         res.render("Listing/show", { curr });
     } catch (err) {
         console.error(err);
@@ -268,6 +293,7 @@ app.get("/listings/:id",async (req, res, next) => {
 app.post("/listings", isLoggedIn, async (req, res, next) => {
     try {
         const newListing = new listing(req.body);
+        newListing.owner = req.user._id;  // assign owner
         await newListing.save();
         setFlash(req, "success", "New listing created successfully! 🏠");
         res.redirect(`/listings/${newListing._id}`);
@@ -278,7 +304,7 @@ app.post("/listings", isLoggedIn, async (req, res, next) => {
     }
 });
 
-app.get("/listings/:id/edit", isLoggedIn, async (req, res, next) => {
+app.get("/listings/:id/edit", isLoggedIn, isOwner, async (req, res, next) => {
     try {
         const { id } = req.params;
         const curr = await listing.findById(id);
@@ -294,12 +320,12 @@ app.get("/listings/:id/edit", isLoggedIn, async (req, res, next) => {
     }
 });
 
-app.put("/listings/:id", isLoggedIn, async (req, res, next) => {
+app.put("/listings/:id", isLoggedIn, isOwner, async (req, res, next) => {
     try {
         const { id } = req.params;
         const updatedListing = await listing.findByIdAndUpdate(
-            id, 
-            { $set: req.body }, 
+            id,
+            { $set: req.body },
             { new: true, runValidators: true }
         );
         if (!updatedListing) {
@@ -315,7 +341,7 @@ app.put("/listings/:id", isLoggedIn, async (req, res, next) => {
     }
 });
 
-app.delete("/listings/:id", isLoggedIn, async (req, res, next) => {
+app.delete("/listings/:id", isLoggedIn, isOwner, async (req, res, next) => {
     try {
         const { id } = req.params;
         const deletedListing = await listing.findByIdAndDelete(id);
@@ -345,17 +371,17 @@ app.post("/listings/:id/reviews", isLoggedIn, async (req, res, next) => {
             setFlash(req, "error", "Listing not found");
             return res.redirect("/listings");
         }
-        
+
         const newReview = new Review({
             comment: req.body.comment,
             rating: req.body.rating,
             listing: id
         });
-        
+
         await newReview.save();
         currListing.reviews.push(newReview._id);
         await currListing.save();
-        
+
         setFlash(req, "success", "Review added! ⭐");
         res.redirect(`/listings/${id}`);
     } catch (err) {
@@ -384,11 +410,11 @@ app.delete("/listings/:id/reviews/:reviewId", isLoggedIn, async (req, res, next)
 // ══════════════════════════════════════════════════════════════════════════════
 
 app.use((req, res) => {
-    res.status(404).render("error", { 
-        obj: { 
-            x: 404, 
-            y: "Page not Found" 
-        } 
+    res.status(404).render("error", {
+        obj: {
+            x: 404,
+            y: "Page not Found"
+        }
     });
 });
 
@@ -396,8 +422,8 @@ app.use((err, req, res, next) => {
     console.error(err);
     const statusCode = err.statusCode || 500;
     const message = err.message || "Something went wrong";
-    res.status(statusCode).render("error", { 
-        obj: { x: statusCode, y: message } 
+    res.status(statusCode).render("error", {
+        obj: { x: statusCode, y: message }
     });
 });
 

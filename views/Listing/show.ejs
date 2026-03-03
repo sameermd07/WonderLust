@@ -1,491 +1,540 @@
-<%layout("../Layouts/boilerplate")%>
+﻿<%layout("../Layouts/boilerplate")%>
 
-<style>
-  .show-container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-  }
+  <style>
+    .show-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #222;
-    text-decoration: none;
-    font-weight: 500;
-    margin-bottom: 24px;
-    transition: all 0.3s ease;
-  }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #222;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 24px;
+      transition: all 0.3s ease;
+    }
 
-  .back-link:hover {
-    color: #FF385C;
-    transform: translateX(-5px);
-  }
+    .back-link:hover {
+      color: #FF385C;
+      transform: translateX(-5px);
+    }
 
-  .listing-detail-card {
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-    margin-bottom: 40px;
-  }
+    .listing-detail-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 40px;
+    }
 
-  .listing-image-container {
-    position: relative;
-    width: 100%;
-    height: 500px;
-    overflow: hidden;
-    background: #f8f9fa;
-  }
+    .listing-image-container {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      background: #f8f9fa;
+    }
 
-  .listing-main-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+    .listing-main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  .listing-content {
-    padding: 40px;
-  }
+    .listing-content {
+      padding: 40px;
+    }
 
-  .listing-header {
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 24px;
-    margin-bottom: 32px;
-  }
+    .listing-header {
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
 
-  .listing-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 12px;
-    line-height: 1.2;
-  }
+    .listing-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
 
-  .listing-location {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #717171;
-    font-size: 1rem;
-    margin-bottom: 16px;
-  }
+    .listing-location {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #717171;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
 
-  .listing-location i { color: #FF385C; }
+    .listing-location i {
+      color: #FF385C;
+    }
 
-  .listing-price {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #222;
-    margin-top: 12px;
-  }
+    .listing-price {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #222;
+      margin-top: 12px;
+    }
 
-  .price-label {
-    font-size: 1rem;
-    font-weight: 400;
-    color: #717171;
-  }
+    .price-label {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #717171;
+    }
 
-  .listing-description-section { margin-bottom: 32px; }
+    .listing-description-section {
+      margin-bottom: 32px;
+    }
 
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #222;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-  .section-title i { color: #FF385C; }
+    .section-title i {
+      color: #FF385C;
+    }
 
-  .listing-description {
-    color: #484848;
-    font-size: 1rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-  }
+    .listing-description {
+      color: #484848;
+      font-size: 1rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
 
-  .action-buttons {
-    display: flex;
-    gap: 16px;
-    padding-top: 32px;
-    border-top: 1px solid #f0f0f0;
-  }
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      padding-top: 32px;
+      border-top: 1px solid #f0f0f0;
+    }
 
-  .btn-edit {
-    flex: 1;
-    background: #FF385C;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-  }
+    .btn-edit {
+      flex: 1;
+      background: #FF385C;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
 
-  .btn-edit:hover {
-    background: #e0314f;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
-    color: #fff;
-  }
+    .btn-edit:hover {
+      background: #e0314f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+      color: #fff;
+    }
 
-  .btn-delete {
-    flex: 1;
-    background: #fff;
-    color: #222;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    padding: 14px 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
+    .btn-delete {
+      flex: 1;
+      background: #fff;
+      color: #222;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
 
-  .btn-delete:hover {
-    border-color: #dc3545;
-    color: #dc3545;
-  }
+    .btn-delete:hover {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
 
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
-    padding: 24px;
-    background: #f8f9fa;
-    border-radius: 12px;
-  }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+      padding: 24px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
 
-  .info-item { display: flex; flex-direction: column; gap: 8px; }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-  .info-label {
-    color: #717171;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+    .info-label {
+      color: #717171;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-  .info-value {
-    color: #222;
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
+    .info-value {
+      color: #222;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
 
-  /* ── Reviews ─────────────────────────────────── */
-  .reviews-section {
-    background: #fff;
-    border-radius: 16px;
-    padding: 40px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-    margin-bottom: 40px;
-  }
+    /* â”€â”€ Reviews â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .reviews-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 40px;
+    }
 
-  .review-form-card {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 36px;
-  }
+    .review-form-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 36px;
+    }
 
-  .review-form-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #222;
-    margin-bottom: 20px;
-  }
+    .review-form-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 20px;
+    }
 
-  .form-group { margin-bottom: 18px; }
+    .form-group {
+      margin-bottom: 18px;
+    }
 
-  .form-label {
-    display: block;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-  }
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
 
-  .form-control, .form-select {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-    background: #fff;
-  }
+    .form-control,
+    .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      background: #fff;
+    }
 
-  .form-control:focus, .form-select:focus {
-    outline: none;
-    border-color: #FF385C;
-  }
+    .form-control:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #FF385C;
+    }
 
-  .btn-submit-review {
-    background: #FF385C;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 11px 24px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+    .btn-submit-review {
+      background: #FF385C;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-  .btn-submit-review:hover {
-    background: #e0314f;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255,56,92,0.25);
-  }
+    .btn-submit-review:hover {
+      background: #e0314f;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 56, 92, 0.25);
+    }
 
-  .login-prompt {
-    background: #fff5f7;
-    border: 1px solid #ffd6de;
-    border-radius: 10px;
-    padding: 18px 24px;
-    margin-bottom: 32px;
-    color: #555;
-    font-size: 0.95rem;
-  }
+    .login-prompt {
+      background: #fff5f7;
+      border: 1px solid #ffd6de;
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin-bottom: 32px;
+      color: #555;
+      font-size: 0.95rem;
+    }
 
-  .login-prompt a {
-    color: #FF385C;
-    font-weight: 600;
-    text-decoration: none;
-  }
+    .login-prompt a {
+      color: #FF385C;
+      font-weight: 600;
+      text-decoration: none;
+    }
 
-  .reviews-list { display: flex; flex-direction: column; gap: 20px; }
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-  .review-card {
-    background: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 12px;
-    padding: 20px 24px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  }
+    .review-card {
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
 
-  .review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
 
-  .star-rating { color: #FFB400; font-size: 1.1rem; letter-spacing: 2px; }
+    .star-rating {
+      color: #FFB400;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
 
-  .review-date {
-    color: #aaa;
-    font-size: 0.82rem;
-  }
+    .review-date {
+      color: #aaa;
+      font-size: 0.82rem;
+    }
 
-  .review-comment {
-    color: #484848;
-    font-size: 0.97rem;
-    line-height: 1.55;
-  }
+    .review-comment {
+      color: #484848;
+      font-size: 0.97rem;
+      line-height: 1.55;
+    }
 
-  .btn-delete-review {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    color: #888;
-    font-size: 0.8rem;
-    padding: 4px 10px;
-    cursor: pointer;
-    margin-top: 12px;
-    transition: all 0.2s;
-  }
+    .btn-delete-review {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      color: #888;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.2s;
+    }
 
-  .btn-delete-review:hover {
-    border-color: #dc3545;
-    color: #dc3545;
-  }
+    .btn-delete-review:hover {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
 
-  .no-reviews {
-    color: #aaa;
-    font-style: italic;
-    text-align: center;
-    padding: 20px 0;
-  }
+    .no-reviews {
+      color: #aaa;
+      font-style: italic;
+      text-align: center;
+      padding: 20px 0;
+    }
 
-  @media (max-width: 768px) {
-    .listing-image-container { height: 300px; }
-    .listing-content { padding: 24px 20px; }
-    .listing-title { font-size: 1.5rem; }
-    .action-buttons { flex-direction: column; }
-    .info-grid { grid-template-columns: 1fr; gap: 16px; }
-    .reviews-section { padding: 24px 20px; }
-  }
-</style>
+    @media (max-width: 768px) {
+      .listing-image-container {
+        height: 300px;
+      }
 
-<div class="show-container">
+      .listing-content {
+        padding: 24px 20px;
+      }
 
-  <!-- Back Link -->
-  <a href="/listings" class="back-link">
-    <i class="fas fa-arrow-left"></i>
-    <span>Back to all listings</span>
-  </a>
+      .listing-title {
+        font-size: 1.5rem;
+      }
 
-  <!-- Listing Detail Card -->
-  <div class="listing-detail-card">
+      .action-buttons {
+        flex-direction: column;
+      }
 
-    <div class="listing-image-container">
-      <img src="<%=curr.image.url%>" alt="<%=curr.title%>" class="listing-main-image">
-    </div>
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
 
-    <div class="listing-content">
+      .reviews-section {
+        padding: 24px 20px;
+      }
+    }
+  </style>
 
-      <div class="listing-header">
-        <h1 class="listing-title"><%=curr.title%></h1>
-        <div class="listing-location">
-          <i class="fas fa-map-marker-alt"></i>
-          <span><%=curr.location%>, <%=curr.country%></span>
-        </div>
-        <div class="listing-price">
-          <%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(curr.price) %>
-          <span class="price-label">/ night</span>
-        </div>
+  <div class="show-container">
+
+    <!-- Back Link -->
+    <a href="/listings" class="back-link">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to all listings</span>
+    </a>
+
+    <!-- Listing Detail Card -->
+    <div class="listing-detail-card">
+
+      <div class="listing-image-container">
+        <img src="<%=curr.image.url%>" alt="<%=curr.title%>" class="listing-main-image">
       </div>
 
-      <div class="listing-description-section">
-        <h2 class="section-title">
-          <i class="fas fa-info-circle"></i>
-          <span>About this place</span>
-        </h2>
-        <p class="listing-description"><%=curr.description%></p>
-      </div>
+      <div class="listing-content">
 
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="info-label"><i class="fas fa-map-marker-alt me-1"></i> Location</span>
-          <span class="info-value"><%=curr.location%></span>
-        </div>
-        <div class="info-item">
-          <span class="info-label"><i class="fas fa-globe me-1"></i> Country</span>
-          <span class="info-value"><%=curr.country%></span>
-        </div>
-        <div class="info-item">
-          <span class="info-label"><i class="fas fa-rupee-sign me-1"></i> Price per night</span>
-          <span class="info-value"><%= new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(curr.price) %></span>
-        </div>
-      </div>
-
-      <% if(currentUser) { %>
-      <div class="action-buttons">
-        <a href="/listings/<%=curr._id%>/edit" class="btn-edit">
-          <i class="fas fa-edit"></i><span>Edit Listing</span>
-        </a>
-        <form action="/listings/<%=curr._id%>/?_method=DELETE" method="post" style="flex:1;">
-          <button type="submit" class="btn-delete" onclick="return confirm('Delete this listing?');">
-            <i class="fas fa-trash-alt"></i><span>Delete Listing</span>
-          </button>
-        </form>
-      </div>
-      <% } %>
-
-    </div>
-  </div>
-
-  <!-- ══ REVIEWS SECTION ═══════════════════════════ -->
-  <div class="reviews-section">
-
-    <h2 class="section-title">
-      <i class="fas fa-star"></i>
-      <span>Reviews (<%= curr.reviews.length %>)</span>
-    </h2>
-
-    <!-- Add Review Form — only for logged-in users -->
-    <% if(currentUser) { %>
-    <div class="review-form-card">
-      <p class="review-form-title">Leave a Review</p>
-      <form action="/listings/<%=curr._id%>/reviews" method="POST">
-
-        <div class="form-group">
-          <label class="form-label" for="rating">Rating</label>
-          <select name="rating" id="rating" class="form-select" required>
-            <option value="" disabled selected>Select a rating</option>
-            <option value="5">⭐⭐⭐⭐⭐ — Excellent (5)</option>
-            <option value="4">⭐⭐⭐⭐ — Good (4)</option>
-            <option value="3">⭐⭐⭐ — Average (3)</option>
-            <option value="2">⭐⭐ — Poor (2)</option>
-            <option value="1">⭐ — Terrible (1)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="comment">Comment</label>
-          <textarea
-            name="comment"
-            id="comment"
-            class="form-control"
-            rows="4"
-            placeholder="Share your experience..."
-            required
-          ></textarea>
-        </div>
-
-        <button type="submit" class="btn-submit-review">
-          <i class="fas fa-paper-plane me-1"></i> Submit Review
-        </button>
-      </form>
-    </div>
-    <% } else { %>
-    <div class="login-prompt">
-      <i class="fas fa-lock me-1"></i>
-      Please <a href="/login">log in</a> to leave a review.
-    </div>
-    <% } %>
-
-    <!-- Display Reviews -->
-    <% if(curr.reviews.length === 0) { %>
-      <p class="no-reviews">No reviews yet. Be the first to share your experience!</p>
-    <% } else { %>
-    <div class="reviews-list">
-      <% for(let rev of curr.reviews) { %>
-      <div class="review-card">
-        <div class="review-header">
-          <div class="star-rating">
-            <% for(let i=0; i < rev.rating; i++) { %>⭐<% } %>
-            <span style="color:#222; font-size:0.9rem; margin-left:6px;">(<%= rev.rating %>/5)</span>
+        <div class="listing-header">
+          <h1 class="listing-title">
+            <%=curr.title%>
+          </h1>
+          <div class="listing-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>
+              <%=curr.location%>, <%=curr.country%>
+            </span>
           </div>
-          <span class="review-date">
-            <%= rev.createdAt ? rev.createdAt.toDateString() : '' %>
-          </span>
+          <div class="listing-price">
+            <%= new Intl.NumberFormat('en-IN', { style: 'currency' , currency: 'INR' }).format(curr.price) %>
+              <span class="price-label">/ night</span>
+          </div>
         </div>
 
-        <p class="review-comment"><%=rev.comment%></p>
+        <div class="listing-description-section">
+          <h2 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            <span>About this place</span>
+          </h2>
+          <p class="listing-description">
+            <%=curr.description%>
+          </p>
+        </div>
 
-        <% if(currentUser) { %>
-        <form action="/listings/<%=curr._id%>/reviews/<%=rev._id%>?_method=DELETE" method="POST">
-          <button type="submit" class="btn-delete-review"
-            onclick="return confirm('Delete this review?');">
-            <i class="fas fa-trash-alt"></i> Delete
-          </button>
-        </form>
-        <% } %>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label"><i class="fas fa-map-marker-alt me-1"></i> Location</span>
+            <span class="info-value">
+              <%=curr.location%>
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label"><i class="fas fa-globe me-1"></i> Country</span>
+            <span class="info-value">
+              <%=curr.country%>
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label"><i class="fas fa-rupee-sign me-1"></i> Price per night</span>
+            <span class="info-value">
+              <%= new Intl.NumberFormat('en-IN', { style: 'currency' , currency: 'INR' }).format(curr.price) %>
+            </span>
+          </div>
+        </div>
+
+        <!-- Owner-only: Edit & Delete buttons -->
+        <% if (currentUser && curr.owner && curr.owner._id.equals(currentUser._id)) { %>
+          <div class="action-buttons">
+            <a href="/listings/<%=curr._id%>/edit" class="btn-edit">
+              <i class="fas fa-edit"></i><span>Edit Listing</span>
+            </a>
+            <form action="/listings/<%=curr._id%>/?_method=DELETE" method="post" style="flex:1;">
+              <button type="submit" class="btn-delete" onclick="return confirm('Delete this listing?');">
+                <i class="fas fa-trash-alt"></i><span>Delete Listing</span>
+              </button>
+            </form>
+          </div>
+          <% } %>
+
       </div>
-      <% } %>
     </div>
-    <% } %>
 
-  </div><!-- end reviews-section -->
+    <!-- â•â• REVIEWS SECTION â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="reviews-section">
 
-</div>
+      <h2 class="section-title">
+        <i class="fas fa-star"></i>
+        <span>Reviews (<%= curr.reviews.length %>)</span>
+      </h2>
+
+      <!-- Add Review Form â€” only for logged-in users -->
+      <% if (currentUser) { %>
+        <div class="review-form-card">
+          <p class="review-form-title">Leave a Review</p>
+          <form action="/listings/<%=curr._id%>/reviews" method="POST">
+
+            <div class="form-group">
+              <label class="form-label" for="rating">Rating</label>
+              <select name="rating" id="rating" class="form-select" required>
+                <option value="" disabled selected>Select a rating</option>
+                <option value="5">â­â­â­â­â­ â€” Excellent (5)</option>
+                <option value="4">â­â­â­â­ â€” Good (4)</option>
+                <option value="3">â­â­â­ â€” Average (3)</option>
+                <option value="2">â­â­ â€” Poor (2)</option>
+                <option value="1">â­ â€” Terrible (1)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="comment">Comment</label>
+              <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Share your experience..."
+                required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-review">
+              <i class="fas fa-paper-plane me-1"></i> Submit Review
+            </button>
+          </form>
+        </div>
+        <% } else { %>
+          <div class="login-prompt">
+            <i class="fas fa-lock me-1"></i>
+            Please <a href="/login">log in</a> to leave a review.
+          </div>
+          <% } %>
+
+            <!-- Display Reviews -->
+            <% if (curr.reviews.length===0) { %>
+              <p class="no-reviews">No reviews yet. Be the first to share your experience!</p>
+              <% } else { %>
+                <div class="reviews-list">
+                  <% for (let rev of curr.reviews) { %>
+                    <div class="review-card">
+                      <div class="review-header">
+                        <div class="star-rating">
+                          <% for (let i=0; i < rev.rating; i++) { %>â­<% } %>
+                              <span style="color:#222; font-size:0.9rem; margin-left:6px;">(<%= rev.rating %>/5)</span>
+                        </div>
+                        <span class="review-date">
+                          <%= rev.createdAt ? rev.createdAt.toDateString() : '' %>
+                        </span>
+                      </div>
+
+                      <p class="review-comment">
+                        <%=rev.comment%>
+                      </p>
+
+                      <% if (currentUser) { %>
+                        <form action="/listings/<%=curr._id%>/reviews/<%=rev._id%>?_method=DELETE" method="POST">
+                          <button type="submit" class="btn-delete-review"
+                            onclick="return confirm('Delete this review?');">
+                            <i class="fas fa-trash-alt"></i> Delete
+                          </button>
+                        </form>
+                        <% } %>
+                    </div>
+                    <% } %>
+                </div>
+                <% } %>
+
+    </div><!-- end reviews-section -->
+
+  </div>
